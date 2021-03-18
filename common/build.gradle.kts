@@ -1,7 +1,8 @@
 plugins {
     kotlin("multiplatform")
-    kotlin("plugin.serialization") version "1.4.30"
+    kotlin("plugin.serialization") version "1.4.31"
     id("com.android.library")
+    id("maven-publish")
 }
 
 group = "com.robgulley"
@@ -25,7 +26,9 @@ android {
 }
 
 kotlin {
-    android()
+    android{
+        publishLibraryVariants("release", "debug")
+    }
     macosX64()
     linuxX64()
     linuxArm64()
