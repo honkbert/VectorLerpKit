@@ -3,7 +3,7 @@ Utilities and maths for transforming 3D and real world sensor data
 
 _Not Your Father's Java 1.0 Vector_
 
-Use a bunch of nice Kotlin fluff ton write neat code that is less prone to bugs. These operations do not work like proper algebraic matrix operations. They operator straight across the indexes which can be more useful in situations where you're reading hardware data and need to transform it meaningfully.
+Use a bunch of nice Kotlin fluff to write neat code that is less prone to bugs. These operations do not work like proper algebraic matrix operations. They operator straight across the indexes which can be more useful in situations where you're reading hardware data and need to transform it meaningfully.
 
 `Vector(a, b, c) * Vector(d, e, f) * someScalar - someOffset`
 
