@@ -10,6 +10,8 @@ class Time(private val markNanos: Long) {
 
     companion object {
         fun now() = Time(getTimeNanos())
+        fun nanoTime() = getTimeNanos()
+        fun currentTimeMillis(): Long = getCurrentTimeMillis()
     }
 
     fun minusMillis(millis: Long) = Time(markMillis - millis)
@@ -20,4 +22,10 @@ class Time(private val markNanos: Long) {
     operator fun minus(other: Time) = (this.markNanos - other.markNanos).toDuration(DurationUnit.NANOSECONDS)
 }
 
-expect fun getTimeNanos(): Long
+internal expect fun getTimeNanos(): Long
+internal expect fun getCurrentTimeMillis(): Long
+
+expect object Sleep {
+    fun blockFor(timeMillis: Long)
+    fun blockFor(millis: Long, nanos: Int)
+}
