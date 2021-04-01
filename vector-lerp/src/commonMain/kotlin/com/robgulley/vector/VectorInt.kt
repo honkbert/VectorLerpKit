@@ -2,7 +2,7 @@ package com.robgulley.vector
 
 import kotlin.math.sqrt
 
-@kotlinx.serialization.Serializable
+//@kotlinx.serialization.Serializable
 data class VectorInt(val x: Int, val y: Int, val z: Int) {
     constructor(list: List<Int>) : this(list[0], list[1], list[2])
     constructor(array: IntArray) : this(array[0], array[1], array[2])

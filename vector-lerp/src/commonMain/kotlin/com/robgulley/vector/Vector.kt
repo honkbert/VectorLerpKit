@@ -5,7 +5,7 @@ import kotlin.math.roundToInt
 import kotlin.math.sin
 import kotlin.math.sqrt
 
-@kotlinx.serialization.Serializable
+//@kotlinx.serialization.Serializable
 data class Vector(val x: Double, val y: Double, val z: Double)  {
     constructor(list: List<Double>) : this(list[0], list[1], list[2])
     constructor(array: DoubleArray) : this(array[0], array[1], array[2])

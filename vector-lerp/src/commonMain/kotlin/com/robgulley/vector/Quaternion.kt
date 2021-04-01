@@ -7,7 +7,7 @@ import kotlin.math.asin
 import kotlin.math.atan2
 import kotlin.math.withSign
 
-@kotlinx.serialization.Serializable
+//@kotlinx.serialization.Serializable
 data class Quaternion(val w: Double, val x: Double, val y: Double, val z: Double) {
     constructor(array: DoubleArray) : this(array[0], array[1], array[2], array[3])
     constructor(other: Quaternion) : this(w = other.w, x = other.x, y = other.y, z = other.z)
