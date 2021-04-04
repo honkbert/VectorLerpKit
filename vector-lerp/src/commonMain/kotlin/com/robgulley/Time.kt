@@ -1,12 +1,14 @@
 package com.robgulley
 
+import kotlin.time.Duration
 import kotlin.time.DurationUnit
 import kotlin.time.ExperimentalTime
 import kotlin.time.toDuration
 
 @OptIn(ExperimentalTime::class)
 class Time(private val markNanos: Long) {
-    private val markMillis = markNanos / 1000000
+    private val markMillis =
+        Duration.convert(markNanos.toDouble(), DurationUnit.NANOSECONDS, DurationUnit.MILLISECONDS).toLong()
 
     companion object {
         fun now() = Time(getTimeNanos())
@@ -14,12 +16,26 @@ class Time(private val markNanos: Long) {
         fun currentTimeMillis(): Long = getCurrentTimeMillis()
     }
 
-    fun minusMillis(millis: Long) = Time(markMillis - millis)
+    fun minusMillis(millis: Long) = Time(markNanos - millis * 1000)
     fun toSystemMilli() = markMillis
     fun isAfter(timeMark: Time): Boolean = this.markNanos > timeMark.markNanos
     fun isBefore(timeMark: Time): Boolean = this.markNanos < timeMark.markNanos
+    fun elapsedSinceNow() = (this.markNanos - now().markNanos).toDuration(DurationUnit.NANOSECONDS)
 
     operator fun minus(other: Time) = (this.markNanos - other.markNanos).toDuration(DurationUnit.NANOSECONDS)
+
+    override fun toString(): String {
+        return markNanos.toDuration(DurationUnit.NANOSECONDS).toComponents { hours, minutes, seconds, nanos ->
+            val millis =
+                Duration.convert(
+                    nanos.toDouble(),
+                    DurationUnit.NANOSECONDS,
+                    DurationUnit.MILLISECONDS)
+                    .toLong()
+                    .toString().padStart(3, '0')
+            "$hours:$minutes:$seconds.$millis"
+        }
+    }
 }
 
 internal expect fun getTimeNanos(): Long
