@@ -8,6 +8,8 @@ import platform.posix.gettimeofday
 import platform.posix.nanosleep
 import platform.posix.timespec
 import platform.posix.timeval
+import kotlin.time.Duration
+import kotlin.time.ExperimentalTime
 
 internal actual fun getCurrentTimeMillis(): Long = memScoped {
     val timeVal = alloc<timeval>()
@@ -31,6 +33,17 @@ actual object Sleep {
             val timespec = alloc<timespec>()
             timespec.tv_sec = timeNanos / 1000000000L
             timespec.tv_nsec = nanos.toLong()
+            nanosleep(timespec.ptr, null)
+        }
+    }
+
+    @OptIn(ExperimentalTime::class)
+    actual fun blockFor(duration: Duration) {
+        val (seconds, nanos) = duration.toComponents { seconds, nanoseconds -> Pair(seconds, nanoseconds) }
+        memScoped {
+            val timespec = alloc<timespec>()
+            timespec.tv_sec = seconds
+            timespec.tv_nsec = nanos.convert()
             nanosleep(timespec.ptr, null)
         }
     }

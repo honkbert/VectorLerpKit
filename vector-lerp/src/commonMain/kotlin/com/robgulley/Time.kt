@@ -44,4 +44,6 @@ internal expect fun getCurrentTimeMillis(): Long
 expect object Sleep {
     fun blockFor(timeMillis: Long)
     fun blockFor(millis: Long, nanos: Int)
+    @OptIn(ExperimentalTime::class)
+    fun blockFor(duration: Duration)
 }
