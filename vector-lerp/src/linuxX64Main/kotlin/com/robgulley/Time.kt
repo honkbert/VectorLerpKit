@@ -1,20 +1,46 @@
 package com.robgulley
 
-import kotlinx.cinterop.alloc
-import kotlinx.cinterop.convert
-import kotlinx.cinterop.memScoped
-import kotlinx.cinterop.ptr
-import platform.posix.gettimeofday
-import platform.posix.nanosleep
-import platform.posix.timespec
-import platform.posix.timeval
+import kotlinx.cinterop.*
+import platform.posix.*
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
+@OptIn(ExperimentalTime::class)
 internal actual fun getCurrentTimeMillis(): Long = memScoped {
-    val timeVal = alloc<timeval>()
-    gettimeofday(timeVal.ptr, null)
-    (timeVal.tv_sec * 1000) + (timeVal.tv_usec / 1000)
+    time(null)
+}
+
+internal actual fun getEpochMilliForTime(day: Int, month: Int, year: Int, hour: Int, min: Int, sec: Int, tz: Int): Long {
+    return memScoped {
+        val timeComponents: tm = alloc()
+        timeComponents.tm_mday = day
+        timeComponents.tm_mon = month
+        timeComponents.tm_year = year
+        timeComponents.tm_hour = hour
+        timeComponents.tm_min = min
+        timeComponents.tm_sec = sec
+        //timeComponents.tm_zone = 0
+
+        val time = mktime(timeComponents.ptr)
+        time(time.toCPointer())
+    }
+}
+
+internal actual fun getTimeForEpochMilli(epochMilli: Long): SimpleCalendar {
+    return memScoped {
+        val timeComponentsPtr = allocPointerTo<tm>()
+        timeComponentsPtr.value = gmtime(epochMilli.toCPointer())
+        timeComponentsPtr.pointed?.let {
+            SimpleCalendar(
+                day = it.tm_mday ,
+            month = it.tm_mon,
+                year = it.tm_year,
+                hour = it.tm_hour,
+                min = it.tm_min,
+                sec = it.tm_sec
+            )
+        } ?: throw Exception("Problem with time conversion")
+    }
 }
 
 actual object Sleep {

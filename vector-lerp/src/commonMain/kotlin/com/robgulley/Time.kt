@@ -30,7 +30,8 @@ class Time(private val markNanos: Long) {
                 Duration.convert(
                     nanos.toDouble(),
                     DurationUnit.NANOSECONDS,
-                    DurationUnit.MILLISECONDS)
+                    DurationUnit.MILLISECONDS
+                )
                     .toLong()
                     .toString().padStart(3, '0')
             "$hours:$minutes:$seconds.$millis"
@@ -38,12 +39,39 @@ class Time(private val markNanos: Long) {
     }
 }
 
+class SimpleCalendar(
+    var day: Int,
+    var month: Int,
+    var year: Int,
+    var hour: Int,
+    var min: Int,
+    var sec: Int,
+    var tz: Int = 0,
+) {
+
+    companion object {
+        fun fromEpochMilli(epochMilli: Long): SimpleCalendar {
+            return getTimeForEpochMilli(epochMilli)
+        }
+        fun now(): SimpleCalendar {
+            val now = getCurrentTimeMillis()
+            return getTimeForEpochMilli(now)
+        }
+    }
+
+    val epochTime
+        get() = getEpochMilliForTime(day, month, year, hour, min, sec, tz)
+}
+
 internal expect fun getTimeNanos(): Long
 internal expect fun getCurrentTimeMillis(): Long
+internal expect fun getEpochMilliForTime(day: Int, month: Int, year: Int, hour: Int, min: Int, sec: Int, tz: Int): Long
+internal expect fun getTimeForEpochMilli(epochMilli: Long): SimpleCalendar
 
 expect object Sleep {
     fun blockFor(timeMillis: Long)
     fun blockFor(millis: Long, nanos: Int)
+
     @OptIn(ExperimentalTime::class)
     fun blockFor(duration: Duration)
 }
