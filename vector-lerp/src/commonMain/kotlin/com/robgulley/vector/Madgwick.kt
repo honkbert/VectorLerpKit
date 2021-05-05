@@ -2,6 +2,7 @@ package com.robgulley.vector
 
 import com.robgulley.time.Time
 import com.robgulley.hertz.Hz
+import com.robgulley.time.Time.Companion.between
 import kotlin.math.sqrt
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
@@ -234,6 +235,6 @@ class Madgwick(private val sampleFreq: Hz? = null,
         currentBeta = secondsSinceStart.coerceAtMost(betas.lastIndex)
     }
 
-    private fun between(a: Time, b: Time): Duration = b - a
+    private fun between(a: Time, b: Time): Duration = a.between(b)
 
 }

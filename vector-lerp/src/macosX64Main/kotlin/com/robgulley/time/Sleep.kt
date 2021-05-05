@@ -3,6 +3,9 @@ package com.robgulley.time
 import kotlinx.cinterop.alloc
 import kotlinx.cinterop.convert
 import kotlinx.cinterop.memScoped
+import kotlinx.cinterop.ptr
+import platform.posix.nanosleep
+import platform.posix.timespec
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
