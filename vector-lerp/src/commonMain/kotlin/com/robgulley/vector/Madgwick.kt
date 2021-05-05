@@ -1,6 +1,6 @@
 package com.robgulley.vector
 
-import com.robgulley.Time
+import com.robgulley.time.Time
 import com.robgulley.hertz.Hz
 import kotlin.math.sqrt
 import kotlin.time.Duration

@@ -1,26 +1,10 @@
-package com.robgulley
+package com.robgulley.time
 
-import kotlinx.cinterop.*
-import platform.posix.gettimeofday
-import platform.posix.nanosleep
-import platform.posix.timespec
-import platform.posix.timeval
+import kotlinx.cinterop.alloc
+import kotlinx.cinterop.convert
+import kotlinx.cinterop.memScoped
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
-
-internal actual fun getCurrentTimeMillis(): Long = memScoped {
-    val timeVal = alloc<timeval>()
-    gettimeofday(timeVal.ptr, null)
-    (timeVal.tv_sec * 1000) + (timeVal.tv_usec / 1000)
-}
-
-actual fun getEpochMilliForTime(day: Int, month: Int, year: Int, hour: Int, min: Int, sec: Int, tz: Int): Long {
-    return 0 //TODO
-}
-
-internal actual fun getTimeForEpochMilli(epochMilli: Long): SimpleCalendar {
-    TODO("not implemented")
-}
 
 actual object Sleep {
     actual fun blockFor(timeMillis: Long) {
