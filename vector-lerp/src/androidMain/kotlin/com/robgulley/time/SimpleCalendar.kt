@@ -1,16 +1,15 @@
 package com.robgulley.time
 
-import java.util.*
 import java.util.Calendar.*
 
 actual class SimpleCalendar(
-    var day: Int,
-    var month: Int,
-    var year: Int,
-    var hour: Int,
-    var min: Int,
-    var sec: Int,
-    var tz: Int = 0, //TODO
+    actual var day: Int,
+    actual var month: Int,
+    actual var year: Int,
+    actual var hour: Int,
+    actual var min: Int,
+    actual var sec: Int,
+    actual var tz: Int = 0, //TODO
 ) {
 
     actual companion object {
