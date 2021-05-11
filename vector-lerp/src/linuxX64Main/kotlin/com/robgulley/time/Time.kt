@@ -29,8 +29,8 @@ actual class Time private actual constructor(private val markNanos: Long) {
 
     actual fun elapsedSinceNow(): Duration = (this.markNanos - now().markNanos).toDuration(DurationUnit.NANOSECONDS)
 
-    actual operator fun minus(other: Duration): Time = Time(this.markNanos - other.toLongNanoseconds())
-    actual operator fun plus(other: Duration): Time = Time(this.markNanos + other.toLongNanoseconds())
+    actual operator fun minus(other: Duration): Time = Time(this.markNanos - other.inWholeNanoseconds)
+    actual operator fun plus(other: Duration): Time = Time(this.markNanos + other.inWholeNanoseconds)
 
     actual override fun toString(): String {
         return markNanos.toDuration(DurationUnit.NANOSECONDS).toComponents { hours, minutes, seconds, nanos ->

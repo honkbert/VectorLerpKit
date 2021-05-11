@@ -231,7 +231,7 @@ class Madgwick(private val sampleFreq: Hz? = null,
 
 
     private fun checkBetaCooldown() {
-        val secondsSinceStart: Int = (between(startTime, Time.now()).toLongMilliseconds() / 1000).toInt()
+        val secondsSinceStart: Int = (between(startTime, Time.now()).inWholeMilliseconds / 1000).toInt()
         currentBeta = secondsSinceStart.coerceAtMost(betas.lastIndex)
     }
 
