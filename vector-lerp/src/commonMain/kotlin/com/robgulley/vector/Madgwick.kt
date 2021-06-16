@@ -1,27 +1,53 @@
 package com.robgulley.vector
 
-import com.robgulley.Time
 import com.robgulley.hertz.Hz
+import com.robgulley.time.Time
+import com.robgulley.time.Time.Companion.between
 import kotlin.math.sqrt
 import kotlin.time.Duration
+import kotlin.time.DurationUnit
 import kotlin.time.ExperimentalTime
 
-@OptIn(ExperimentalTime::class)
-class Madgwick(private val sampleFreq: Hz? = null,
-               private val betas: List<Double> = listOf(0.1)) // 2 * proportional gain (Kp)
+
+@ExperimentalTime
+class Madgwick(
+    private val sampleFreq: Hz? = null,
+    private val betas: List<Double> = listOf(0.1)
+) // 2 * proportional gain (Kp)
 {
     private val startTime = Time.now()
-    private var timeStamp = Time.now()
+    private var lastTimestamp = Time.now()
+    private var currentTimestamp = Time.now()
     private var currentBeta = 0
     private val beta
         get() = betas[currentBeta]
 
     //---------------------------------------------------------------------------------------------------
     // AHRS algorithm update
-    fun update(quaternion: Quaternion, gyro: Vector, accel: Vector, mag: Vector) =
-            update(quaternion, gyro.x, gyro.y, gyro.z, accel.x, accel.y, accel.z, mag.x, mag.y, mag.z)
+    fun update(quaternion: Quaternion, gyro: Vector, accel: Vector, mag: Vector): Quaternion {
+        lastTimestamp = currentTimestamp
+        currentTimestamp = Time.now()
+        return update(quaternion, gyro.x, gyro.y, gyro.z, accel.x, accel.y, accel.z, mag.x, mag.y, mag.z)
+    }
 
-    fun update(inQ: Quaternion, gx: Double, gy: Double, gz: Double, ax_in: Double, ay_in: Double, az_in: Double, mx_in: Double, my_in: Double, mz_in: Double): Quaternion {
+    fun update(quaternion: Quaternion, gyro: Vector, accel: Vector, mag: Vector, timeStamp: Time): Quaternion {
+        lastTimestamp = currentTimestamp
+        currentTimestamp = timeStamp
+        return update(quaternion, gyro.x, gyro.y, gyro.z, accel.x, accel.y, accel.z, mag.x, mag.y, mag.z)
+    }
+
+    private fun update(
+        inQ: Quaternion,
+        gx: Double,
+        gy: Double,
+        gz: Double,
+        ax_in: Double,
+        ay_in: Double,
+        az_in: Double,
+        mx_in: Double,
+        my_in: Double,
+        mz_in: Double
+    ): Quaternion {
         var ax = ax_in
         var ay = ay_in
         var az = az_in
@@ -205,35 +231,19 @@ class Madgwick(private val sampleFreq: Hz? = null,
         return Quaternion(newQw, newQx, newQy, newQz)
     }
 
-    private val fastInvSqrt = { x: Double ->
-        val halfx = 0.5f * x.toFloat()
-        var y = x.toFloat()
-        var i = y.toBits()
-        i = 0x5f3759df - (i shr 1)
-        y = Float.fromBits(i)
-        y *= (1.5f - (halfx * y * y))
-        y.toDouble()
-    }
-
     private fun invSqrt(x: Double) = 1 / sqrt(x)
 
     private fun getElapsed(): Double {
         checkBetaCooldown()
         return sampleFreq?.wavelength
-            ?: between(timeStamp, Time.now())
-                .toLongNanoseconds()
-                .div(1000000000.0)
-                .also {
-                    timeStamp = Time.now()
-                }
+            ?: between(lastTimestamp, currentTimestamp).toDouble(DurationUnit.SECONDS)
     }
 
 
     private fun checkBetaCooldown() {
-        val secondsSinceStart: Int = (between(startTime, Time.now()).toLongMilliseconds() / 1000).toInt()
+        val secondsSinceStart = between(startTime, Time.now()).inWholeSeconds.toInt()
         currentBeta = secondsSinceStart.coerceAtMost(betas.lastIndex)
     }
 
-    private fun between(a: Time, b: Time): Duration = b - a
-
+    private fun between(a: Time, b: Time): Duration = a.between(b)
 }

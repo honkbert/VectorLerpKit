@@ -1,6 +1,6 @@
 plugins {
     kotlin("multiplatform")
-    kotlin("plugin.serialization") version "1.5.0-M2"
+    kotlin("plugin.serialization") version "1.5.0"
     id("com.android.library")
     id("maven-publish")
 }
@@ -42,7 +42,7 @@ kotlin {
         }
         val commonMain by getting {
             dependencies {
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-protobuf:1.1.0")
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-protobuf:1.2.0")
             }
         }
         val commonTest by getting {

@@ -31,7 +31,7 @@ class InterpolatedMap(private val map: SortedMap<Double, Double>) : Map<Double, 
     fun getValueAndIsKey(key: Double): Pair<Double?, Boolean> = Pair(get(key), isKey(key))
 
     fun generateMapFromKeys(keys: List<Double>, defaultValue: Double = Double.NaN): SortedMap<Double, Double> =
-        keys.sorted().map { key -> Pair(key, getOrDefault(key, defaultValue)) }.toMap().toSortedMap()
+        keys.sorted().associateWith { key -> getOrDefault(key, defaultValue) }.toSortedMap()
 
 
     companion object {
