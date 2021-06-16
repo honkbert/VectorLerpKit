@@ -1,3 +1,5 @@
+@file:Suppress("EXPERIMENTAL_IS_NOT_ENABLED")
+
 package com.robgulley.time
 
 import kotlinx.cinterop.alloc
@@ -14,17 +16,17 @@ actual object Sleep {
         memScoped {
             val timeSpec = alloc<timespec>()
             timeSpec.tv_sec = timeMillis / 1000
-            timeSpec.tv_nsec = ((timeMillis % 1000L) * 1000000L).convert()
+            timeSpec.tv_nsec = ((timeMillis % 1000L) * 1_000_000L).convert()
             nanosleep(timeSpec.ptr, null)
         }
     }
 
-    actual fun blockFor(millis: Long, nanos: Int) {
-        val timeNanos = millis * 1000000 + nanos
+    actual fun blockFor(millis: Long, nanos: Long) {
+        val timeNanos = millis * 1_000_000 + nanos
         memScoped {
             val timespec = alloc<timespec>()
-            timespec.tv_sec = timeNanos / 1000000000L
-            timespec.tv_nsec = nanos.toLong()
+            timespec.tv_sec = timeNanos / 1_000_000_000L
+            timespec.tv_nsec = nanos
             nanosleep(timespec.ptr, null)
         }
     }
