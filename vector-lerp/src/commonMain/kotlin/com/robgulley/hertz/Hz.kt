@@ -6,8 +6,9 @@ data class Hz(val frequency: Double) : Comparable<Hz> {
     constructor(frequency: Int) : this(frequency.toDouble())
     constructor(frequency: Long) : this(frequency.toDouble())
 
-    val microseconds: Long = ((1 / frequency) * 1000000).roundToLong()
-    val milliseconds: Long = ((1 / frequency) * 1000).roundToLong()
+    val microseconds: Long = ((1 / frequency) * 1_000_000).roundToLong()
+    val milliseconds: Long = ((1 / frequency) * 1_000).roundToLong()
+    val nanoseconds: Long = ((1 / frequency) * 1_000_000_000).roundToLong()
 
     val wavelength: Double = 1 / frequency
 
