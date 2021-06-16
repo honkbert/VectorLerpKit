@@ -1,3 +1,5 @@
+@file:Suppress("EXPERIMENTAL_IS_NOT_ENABLED")
+
 package com.robgulley.time
 
 import kotlin.time.Duration
@@ -19,7 +21,7 @@ expect class Time private constructor(markNanos: Long) {
 
     fun isAfter(timeMark: Time): Boolean
     fun isBefore(timeMark: Time): Boolean
-    fun elapsedSinceNow(): Duration
+    fun elapsedThenToNow(): Duration
 
     operator fun minus(other: Duration): Time
     operator fun plus(other: Duration): Time

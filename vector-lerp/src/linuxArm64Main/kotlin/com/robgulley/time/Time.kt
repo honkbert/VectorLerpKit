@@ -1,7 +1,9 @@
+@file:Suppress("EXPERIMENTAL_IS_NOT_ENABLED")
+
 package com.robgulley.time
 
-import kotlinx.cinterop.*
-import platform.posix.*
+import kotlinx.cinterop.memScoped
+import platform.posix.time
 import kotlin.math.abs
 import kotlin.system.getTimeNanos
 import kotlin.time.Duration
@@ -27,7 +29,7 @@ actual class Time private actual constructor(private val markNanos: Long) {
     actual fun isAfter(timeMark: Time): Boolean = this.markNanos > timeMark.markNanos
     actual fun isBefore(timeMark: Time): Boolean = this.markNanos < timeMark.markNanos
 
-    actual fun elapsedSinceNow(): Duration = (this.markNanos - now().markNanos).toDuration(DurationUnit.NANOSECONDS)
+    actual fun elapsedThenToNow(): Duration = (this.markNanos - now().markNanos).toDuration(DurationUnit.NANOSECONDS)
 
     actual operator fun minus(other: Duration): Time = Time(this.markNanos - other.inWholeNanoseconds)
     actual operator fun plus(other: Duration): Time = Time(this.markNanos + other.inWholeNanoseconds)
