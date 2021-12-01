@@ -8,7 +8,8 @@ fun List<Double>.toVector() = Vector(this)
 fun minOf(a: Vector, b: Vector): Vector = Vector(minOf(a.x, b.x), minOf(a.y, b.y), minOf(a.z, b.z))
 fun maxOf(a: Vector, b: Vector) = Vector(maxOf(a.x, b.x), maxOf(a.y, b.y), maxOf(a.z, b.z))
 
-fun Collection<Vector>.average(): Vector = this.fold(Vector(0.0, 0.0, 0.0), { acc: Vector, v: Vector -> acc + v }) / this.size.toDouble()
+fun Collection<Vector>.average(): Vector =
+    this.fold(Vector(0.0, 0.0, 0.0)) { acc: Vector, v: Vector -> acc + v } / this.size.toDouble()
 
 infix operator fun Double.times(other: Vector) = Vector(this * other.x, this * other.y, this * other.z)
 infix operator fun Double.minus(other: Vector) = Vector(this - other.x, this - other.y, this - other.z)
