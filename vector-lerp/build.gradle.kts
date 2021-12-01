@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "com.robgulley"
-version = "1.0"
+version = "0.1"
 
 repositories {
     mavenCentral()
@@ -14,13 +14,13 @@ repositories {
 }
 
 android {
-    compileSdkVersion(30)
+    compileSdkVersion(31)
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     defaultConfig {
         minSdkVersion(27)
-        targetSdkVersion(30)
+        targetSdkVersion(31)
         versionCode = 1
-        versionName = "1.0"
+        versionName = "0.1"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 }
