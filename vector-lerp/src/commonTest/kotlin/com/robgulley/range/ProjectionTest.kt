@@ -1,16 +1,14 @@
 package com.robgulley.range
 
-import kotlin.math.abs
 import kotlin.test.Test
+import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
-import kotlin.test.assertNotEquals
 
 class ProjectionTest {
 
     @Test
-    fun testIntInt() {
-        val projection = 1..10 projectFun 1..20
-        val project = projection.project
+    fun testIntToInt() {
+        val project = (1..10 linject 1..20).project
         assertEquals(-1, project(0))
         assertEquals(1, project(1))
         assertEquals(7, project(4))
@@ -20,9 +18,8 @@ class ProjectionTest {
     }
 
     @Test
-    fun testIntInt2() {
-        val projection = 0..10 projectFun 0..20
-        val project = projection.project
+    fun testIntToInt2() {
+        val project = (0..10 linject 0..20).project
         assertEquals(0, project(0))
         assertEquals(8, project(4))
         assertEquals(10, project(5))
@@ -31,8 +28,53 @@ class ProjectionTest {
     }
 
     @Test
-    fun testDoubleDouble() {
-        val project = (0.0..10.0 projectFun 0.0..20.0).project
+    fun testIntToDouble() {
+        val project = (0..10 linject 3.0..7.0)
+        val results: Map<Int, Double> = mapOf(
+            0 to 3.0,
+            1 to 3.4,
+            10 to 7.0,
+            11 to 7.4
+        )
+        assertContentEquals(results.values, results.keys.map { project(it) })
+    }
+
+    @Test
+    fun testLongToLong() {
+        val project = (1L..10 linject 1L..20).project
+        assertEquals(-1, project(0))
+        assertEquals(1, project(1))
+        assertEquals(7, project(4))
+        assertEquals(9, project(5))
+        assertEquals(12, project(6))
+        assertEquals(20, project(10))
+    }
+
+    @Test
+    fun testLongToLong2() {
+        val project = (0L..10 linject 0L..20).project
+        assertEquals(0, project(0))
+        assertEquals(8, project(4))
+        assertEquals(10, project(5))
+        assertEquals(12, project(6))
+        assertEquals(20, project(10))
+    }
+
+    @Test
+    fun testLongToDouble() {
+        val project = (0L..10L linject 3.0..7.0)
+        val results: Map<Long, Double> = mapOf(
+            0L to 3.0,
+            1L to 3.4,
+            10L to 7.0,
+            11L to 7.4
+        )
+        assertContentEquals(results.values, results.keys.map { project(it) })
+    }
+
+    @Test
+    fun testDoubleToDouble() {
+        val project = (0.0..10.0 linject 0.0..20.0).project
         assertEquals(-1.0, project(-0.5), 0.0)
         assertEquals(0.0, project(0.0), 0.0)
         assertEquals(10.0, project(5.0), 0.0)
@@ -41,8 +83,8 @@ class ProjectionTest {
     }
 
     @Test
-    fun testDoubleInt() {
-        val project = (0.0..10.0 projectFun 0..20).project
+    fun testDoubleToInt() {
+        val project = (0.0..10.0 linject 0..20).project
         assertEquals(-1, project(-0.6))
         assertEquals(-1, project(-0.5))
         assertEquals(-1, project(-0.26))
@@ -54,31 +96,17 @@ class ProjectionTest {
         assertEquals(4040, project(2020.0))
     }
 
-
-}
-
-/**
- * Asserts that two doubles are equal to within a positive delta.
- * If they are not, an {@link AssertionError} is thrown with the given
- * message. If the expected value is infinity then the delta value is
- * ignored. NaNs are considered equal:
- * <code>assertEquals(Double.NaN, Double.NaN, *)</code> passes
- *
- * @param expected expected value
- * @param actual the value to check against <code>expected</code>
- * @param delta the maximum delta between <code>expected</code> and
- * <code>actual</code> for which both numbers are still
- * considered equal.
- */
-fun assertEquals(expected: Double, actual: Double, delta: Double) {
-    if (doubleIsDifferent(expected, actual, delta)) {
-        assertNotEquals(expected, actual)
+    @Test
+    fun testDoubleToLong() {
+        val project = (0.0..10.0 linject 0L..20L).project
+        assertEquals(-1, project(-0.6))
+        assertEquals(-1, project(-0.5))
+        assertEquals(-1, project(-0.26))
+        assertEquals(0, project(-0.25))
+        assertEquals(0, project(-0.24))
+        assertEquals(0, project(0.0))
+        assertEquals(10, project(5.0))
+        assertEquals(20, project(10.0))
+        assertEquals(4040, project(2020.0))
     }
-}
-
-private fun doubleIsDifferent(d1: Double, d2: Double, delta: Double): Boolean {
-    if (d1.compareTo(d2) == 0) {
-        return false
-    }
-    return abs(d1 - d2) > delta
 }

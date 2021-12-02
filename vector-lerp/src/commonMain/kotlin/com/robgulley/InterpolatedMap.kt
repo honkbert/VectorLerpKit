@@ -1,7 +1,7 @@
 package com.robgulley
 
-import com.robgulley.range.from
-import com.robgulley.range.projectInto
+import com.robgulley.range.by
+import com.robgulley.range.linject
 
 class InterpolatedMap(private val map: SortedMap<Double, Double>) : Map<Double, Double> by map {
 
@@ -16,28 +16,19 @@ class InterpolatedMap(private val map: SortedMap<Double, Double>) : Map<Double, 
                 val listKeys = map.keys.toList()
                 var result = 0.0
                 listKeys.zipWithNext().forEach {
-                    if (key in it.run { first..second }) {
-                        val keyRange = it.run { first..second }
+                    if (key in it.first..it.second) {
+                        val keyRange = it.first..it.second
                         val valueRange = map.getValue(it.first)..map.getValue(it.second)
-                        result = key from keyRange projectInto valueRange
+                        result = keyRange linject valueRange by key
                     }
                 }
                 result
             }
         }
 
-    fun isKey(key: Double) = map.containsKey(key)
-
-    fun getValueAndIsKey(key: Double): Pair<Double?, Boolean> = Pair(get(key), isKey(key))
-
     fun generateMapFromKeys(keys: List<Double>, defaultValue: Double = Double.NaN): SortedMap<Double, Double> =
-        keys.sorted().associateWith { key -> getOrDefault(key, defaultValue) }.toSortedMap()
+        keys.sorted().associateWith { key -> getOrElse(key) { defaultValue } }.toSortedMap()
 
-
-    companion object {
-        fun toInterpolatedMap(map: Map<Double, Double>) = InterpolatedMap(map.toSortedMap())
-    }
 }
 
 fun Map<Double, Double>.toInterpolatedMap() = InterpolatedMap(this.toSortedMap())
-fun <K,V> Map<K,V>.getOrDefault(key: K, defaultValue: V) = this.getOrElse(key) { defaultValue }

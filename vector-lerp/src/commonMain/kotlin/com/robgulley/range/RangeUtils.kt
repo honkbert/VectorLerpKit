@@ -1,30 +1,29 @@
 package com.robgulley.range
 
-import kotlin.math.roundToInt
+private fun spanOrNonZeroDouble(range: ClosedRange<Double>): Double =
+    if (range.span() == 0.0) Double.MIN_VALUE else range.span()
 
-infix fun ClosedRange<Double>.from(value: Double): Double = (value - this.start) / spanOrNonZero(this)
-infix fun ClosedRange<Double>.from(value: Int): Double = (value - this.start) / spanOrNonZero(this)
-infix fun IntRange.from(value: Int): Double = (value - this.first) / spanOrNonZero(this)
-infix fun IntRange.from(value: Double): Double = (value - this.first) / spanOrNonZero(this)
+private fun spanOrNonZeroInt(range: ClosedRange<Int>): Double =
+    if (range.span() == 0) Double.MIN_VALUE else range.span().toDouble()
 
-private fun spanOrNonZero(range: ClosedRange<Double>): Double = range.span().let { span ->
-    if (span == 0.0) Double.MIN_VALUE else span
-}
+private fun spanOrNonZeroLong(range: ClosedRange<Long>): Double =
+    if (range.span() == 0L) Double.MIN_VALUE else range.span().toDouble()
 
-private fun spanOrNonZero(range: IntRange): Double = range.span().let { span ->
-    if (span == 0) Double.MIN_VALUE else span.toDouble()
-}
+infix fun Double.from(doubleRange: ClosedRange<Double>): Double =
+    (this - doubleRange.start) / spanOrNonZeroDouble(doubleRange)
 
-infix fun Double.from(doubleRange: ClosedRange<Double>) = doubleRange.from(this)
-infix fun Int.from(doubleRange: ClosedRange<Double>) = doubleRange.from(this)
-infix fun Int.from(intRange: IntRange) = intRange.from(this)
-infix fun Double.from(intRange: IntRange) = intRange.from(this)
+infix fun Int.from(intRange: ClosedRange<Int>): Double = (this - intRange.start) / spanOrNonZeroInt(intRange)
+infix fun Long.from(longRange: ClosedRange<Long>): Double = (this - longRange.start) / spanOrNonZeroLong(longRange)
 
-infix fun Double.projectInto(intRange: IntRange) = (this * intRange.span()).roundToInt() + intRange.first
-infix fun Double.projectInto(doubleRange: ClosedRange<Double>) = this * doubleRange.span() + doubleRange.start
+infix fun <A : Comparable<A>, B : Comparable<B>> LinearProjection<A, B>.by(amount: A) = this.invoke(amount)
+
+infix fun ClosedRange<Double>.lerpBy(by: Double) = lerp(start, endInclusive, by)
+infix fun ClosedRange<Int>.lerpBy(by: Double) = lerp(start, endInclusive, by)
+infix fun ClosedRange<Long>.lerpBy(by: Double) = lerp(start, endInclusive, by)
 
 fun ClosedRange<Double>.span(): Double = this.endInclusive - this.start
 fun ClosedRange<Int>.span() = this.endInclusive - this.start
+fun ClosedRange<Long>.span() = this.endInclusive - this.start
 
 fun <T : Comparable<T>> ClosedRange<T>.invert() = this.endInclusive..this.start
 
