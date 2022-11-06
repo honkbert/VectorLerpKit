@@ -1,10 +1,6 @@
-
 package com.robgulley.time
 
-import kotlinx.cinterop.memScoped
-import platform.posix.time
 import kotlin.math.abs
-import kotlin.system.getTimeNanos
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
 import kotlin.time.ExperimentalTime
@@ -13,9 +9,8 @@ import kotlin.time.toDuration
 @OptIn(ExperimentalTime::class)
 actual class Time private actual constructor(private val markNanos: Long) {
 
-
     actual companion object {
-        actual fun now() = Time(getTimeNanos())
+        actual fun now() = Time(System.nanoTime())
         actual fun Time.between(other: Time): Duration =
             abs(this.markNanos - other.markNanos).toDuration(DurationUnit.NANOSECONDS)
     }
@@ -29,7 +24,8 @@ actual class Time private actual constructor(private val markNanos: Long) {
     actual fun isAfter(timeMark: Time): Boolean = this.markNanos > timeMark.markNanos
     actual fun isBefore(timeMark: Time): Boolean = this.markNanos < timeMark.markNanos
 
-    actual fun elapsedThenToNow(): Duration = (now().markNanos - this.markNanos).toDuration(DurationUnit.NANOSECONDS)
+    actual fun elapsedThenToNow(): Duration = (this.markNanos - now().markNanos).toDuration(DurationUnit.NANOSECONDS)
+
 
     actual operator fun minus(other: Duration): Time = Time(this.markNanos - other.inWholeNanoseconds)
     actual operator fun plus(other: Duration): Time = Time(this.markNanos + other.inWholeNanoseconds)
@@ -48,7 +44,6 @@ actual class Time private actual constructor(private val markNanos: Long) {
         }
     }
 
-    private fun getEpochTimeMillisNow(): Long = memScoped {
-        time(null)
-    }
+    private fun getEpochTimeMillisNow(): Long = System.currentTimeMillis()
+
 }

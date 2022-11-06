@@ -1,5 +1,3 @@
-@file:Suppress("EXPERIMENTAL_IS_NOT_ENABLED")
-
 package com.robgulley.time
 
 import kotlinx.cinterop.alloc
@@ -8,7 +6,6 @@ import kotlinx.cinterop.memScoped
 import platform.posix.nanosleep
 import platform.posix.timespec
 import kotlin.time.Duration
-import kotlin.time.ExperimentalTime
 
 actual object Sleep {
     actual fun blockFor(timeMillis: Long) {
@@ -30,7 +27,6 @@ actual object Sleep {
         }
     }
 
-    @OptIn(ExperimentalTime::class)
     actual fun blockFor(duration: Duration) {
         val (seconds, nanos) = duration.toComponents { seconds, nanoseconds -> Pair(seconds, nanoseconds) }
         memScoped {

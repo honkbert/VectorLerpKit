@@ -1,11 +1,7 @@
-@file:Suppress("EXPERIMENTAL_IS_NOT_ENABLED")
-
 package com.robgulley.time
 
 import kotlin.time.Duration
-import kotlin.time.ExperimentalTime
 
-@OptIn(ExperimentalTime::class)
 expect class Time private constructor(markNanos: Long) {
 
     companion object {

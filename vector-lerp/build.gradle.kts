@@ -1,6 +1,6 @@
 plugins {
     kotlin("multiplatform")
-    kotlin("plugin.serialization") version "1.6.0"
+    kotlin("plugin.serialization") version "1.7.20"
     id("com.android.library")
     id("maven-publish")
 }
@@ -14,35 +14,28 @@ repositories {
 }
 
 android {
-    compileSdkVersion(31)
+    compileSdk = 31
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     defaultConfig {
-        minSdkVersion(27)
-        targetSdkVersion(31)
-        versionCode = 1
-        versionName = "0.1"
+        minSdk = 27
+        targetSdk = 32
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 }
 
 kotlin {
-    android{
+    android {
         publishLibraryVariants("release", "debug")
     }
+    jvm()
     macosX64()
     linuxX64()
     linuxArm64()
 
     sourceSets {
-        val androidMain by getting
-        val androidTest by getting {
-            dependencies {
-                implementation(kotlin("test-junit"))
-            }
-        }
         val commonMain by getting {
             dependencies {
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-protobuf:1.2.2")
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-protobuf:1.3.3")
             }
         }
         val commonTest by getting {
@@ -51,20 +44,17 @@ kotlin {
                 implementation(kotlin("test-annotations-common"))
             }
         }
-        val desktopMain by creating {
-            dependsOn(commonMain)
-        }
-        val desktopTest by creating
 
-        val linuxX64Main by getting {
-            dependsOn(desktopMain)
+        val androidMain by getting
+        val androidTest by getting {
+            dependencies {
+                implementation(kotlin("test-junit"))
+            }
         }
-        val linuxArm64Main by getting {
-            dependsOn(desktopMain)
-        }
-        val macosX64Main by getting {
-            dependsOn(desktopMain)
-        }
+        val jvmMain by getting
+        val linuxX64Main by getting
+        val linuxArm64Main by getting
+        val macosX64Main by getting
 
     }
 }
